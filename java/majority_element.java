@@ -3,7 +3,7 @@
 // Language: java
 // Link: https://leetcode.com/problems/majority-element/
 // Synced by: LinkCode
-// Date: 9/11/2026, 9:49:45 AM
+// Date: 9/11/2026, 11:47:00 AM
 // ======================================
 
 
