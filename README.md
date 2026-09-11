@@ -6,16 +6,17 @@ My solutions to LeetCode problems, automatically synced from LeetCode.
 
 | Difficulty | Solved |
 |---|---:|
-| 🟢 Easy | 4 |
+| 🟢 Easy | 5 |
 | 🟡 Medium | 0 |
 | 🔴 Hard | 0 |
-| **Total** | **4** |
+| **Total** | **5** |
 
 ## 💻 Solutions
 
 | # | Problem | Difficulty | Language | Topics | Solution |
 |---:|---|---|---|---|---|
 | 88 | Merge Sorted Array | 🟢 Easy | Java | Array, Two Pointers, Sorting | [View](./java/merge_sorted_array.java) |
+| 121 | Best Time to Buy and Sell Stock | 🟢 Easy | Java | Array, Dynamic Programming | [View](./java/best_time_to_buy_and_sell_stock.java) |
 | 136 | Single Number | 🟢 Easy | Java | Array, Bit Manipulation | [View](./java/single_number.java) |
 | 169 | Majority Element | 🟢 Easy | Java | Array, Hash Table, Divide and Conquer, Sorting, Counting, Boyer–Moore Majority Vote Algorithm | [View](./java/majority_element.java) |
 | 2965 | Find Missing and Repeated Values | 🟢 Easy | Java | Array, Hash Table, Math, Matrix | [View](./java/find_missing_and_repeated_values.java) |
