@@ -1,9 +1,22 @@
 # LeetCode Solutions
 
-Automatically updated list of my solved LeetCode problems.
+My solutions to LeetCode problems, automatically synced from LeetCode.
 
-| Problem | Language | Solution |
-|---|---|---|
-| Majority Element | Java | [View Solution](java/majority_element.java) |
+## 📊 Progress
 
-**Total Problems Solved: 1**
+| Difficulty | Solved |
+|---|---:|
+| 🟢 Easy | 1 |
+| 🟡 Medium | 0 |
+| 🔴 Hard | 0 |
+| **Total** | **1** |
+
+## 💻 Solutions
+
+| # | Problem | Difficulty | Language | Topics | Solution |
+|---:|---|---|---|---|---|
+| 169 | Majority Element | 🟢 Easy | Java | Array, Hash Table, Divide and Conquer, Sorting, Counting, Boyer–Moore Majority Vote Algorithm | [View](./java/majority_element.java) |
+
+---
+
+🤖 README automatically generated using GitHub Actions.
