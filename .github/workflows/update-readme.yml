@@ -1,4 +1,4 @@
-name: Update README
+name: Update LeetCode README
 
 on:
   push:
@@ -16,10 +16,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update README
+      - name: Generate README
+        env:
+          PYTHONUNBUFFERED: "1"
         run: |
           python <<'PY'
+          import re
+          import requests
           from pathlib import Path
+          from collections import Counter
+
+          GRAPHQL_URL = "https://leetcode.com/graphql"
+
+          QUERY = """
+          query questionData($titleSlug: String!) {
+            question(titleSlug: $titleSlug) {
+              questionFrontendId
+              title
+              titleSlug
+              difficulty
+              topicTags {
+                name
+              }
+            }
+          }
+          """
 
           extensions = {
               ".java": "Java",
@@ -28,45 +49,199 @@ jobs:
               ".c": "C",
               ".js": "JavaScript",
               ".ts": "TypeScript",
+              ".go": "Go",
+              ".rs": "Rust",
+              ".kt": "Kotlin",
+              ".swift": "Swift",
               ".sql": "SQL",
           }
 
-          files = []
+          solutions = []
 
+          # Find all solution files
           for path in Path(".").rglob("*"):
-              if path.is_file() and path.suffix in extensions:
-                  if ".git" not in path.parts:
-                      files.append(path)
 
-          files.sort()
+              if not path.is_file():
+                  continue
 
-          lines = [
-              "# LeetCode Solutions",
-              "",
-              "Automatically updated list of my solved LeetCode problems.",
-              "",
-              "| Problem | Language | Solution |",
-              "|---|---|---|"
-          ]
+              # Ignore GitHub workflow files
+              if ".git" in path.parts:
+                  continue
 
-          for path in files:
-              problem = path.stem.replace("_", " ").title()
-              language = extensions[path.suffix]
-              link = path.as_posix()
+              if ".github" in path.parts:
+                  continue
 
-              lines.append(
-                  f"| {problem} | {language} | [View Solution]({link}) |"
+              if path.suffix.lower() not in extensions:
+                  continue
+
+              # Read LinkCode header
+              try:
+                  content = path.read_text(
+                      encoding="utf-8",
+                      errors="ignore"
+                  )
+              except Exception:
+                  continue
+
+              # Find LeetCode URL
+              match = re.search(
+                  r"https://leetcode\.com/problems/([^/\s]+)/?",
+                  content
               )
 
-          lines.extend([
-              "",
-              f"**Total Problems Solved: {len(files)}**",
-              ""
-          ])
+              if not match:
+                  print(f"Skipping {path}: LeetCode URL not found")
+                  continue
+
+              slug = match.group(1)
+
+              # Ask LeetCode for problem information
+              try:
+                  response = requests.post(
+                      GRAPHQL_URL,
+                      json={
+                          "query": QUERY,
+                          "variables": {
+                              "titleSlug": slug
+                          }
+                      },
+                      headers={
+                          "Content-Type": "application/json",
+                          "Referer": "https://leetcode.com/"
+                      },
+                      timeout=30
+                  )
+
+                  response.raise_for_status()
+
+                  data = response.json()
+
+                  question = (
+                      data
+                      .get("data", {})
+                      .get("question")
+                  )
+
+                  if not question:
+                      print(f"Could not find LeetCode problem: {slug}")
+                      continue
+
+              except Exception as error:
+                  print(f"Error fetching {slug}: {error}")
+                  continue
+
+              difficulty = question.get("difficulty", "Unknown")
+
+              difficulty_icon = {
+                  "Easy": "🟢",
+                  "Medium": "🟡",
+                  "Hard": "🔴"
+              }.get(difficulty, "⚪")
+
+              topics = ", ".join(
+                  tag["name"]
+                  for tag in question.get("topicTags", [])
+              )
+
+              language = extensions[path.suffix.lower()]
+
+              solution_link = path.as_posix()
+
+              solutions.append({
+                  "number": int(question["questionFrontendId"]),
+                  "title": question["title"],
+                  "difficulty": difficulty,
+                  "icon": difficulty_icon,
+                  "language": language,
+                  "topics": topics,
+                  "link": solution_link,
+              })
+
+          # Sort by LeetCode problem number
+          solutions.sort(key=lambda x: x["number"])
+
+          # Count difficulties
+          counts = Counter(
+              solution["difficulty"]
+              for solution in solutions
+          )
+
+          easy = counts.get("Easy", 0)
+          medium = counts.get("Medium", 0)
+          hard = counts.get("Hard", 0)
+          total = len(solutions)
+
+          # Build README
+          lines = []
+
+          lines.append("# LeetCode Solutions")
+          lines.append("")
+          lines.append(
+              "My solutions to LeetCode problems, "
+              "automatically synced from LeetCode."
+          )
+          lines.append("")
+
+          lines.append("## 📊 Progress")
+          lines.append("")
+          lines.append("| Difficulty | Solved |")
+          lines.append("|---|---:|")
+          lines.append(f"| 🟢 Easy | {easy} |")
+          lines.append(f"| 🟡 Medium | {medium} |")
+          lines.append(f"| 🔴 Hard | {hard} |")
+          lines.append("| **Total** | **" + str(total) + "** |")
+          lines.append("")
+
+          lines.append("## 💻 Solutions")
+          lines.append("")
+
+          if solutions:
+
+              lines.append(
+                  "| # | Problem | Difficulty | Language | Topics | Solution |"
+              )
+              lines.append(
+                  "|---:|---|---|---|---|---|"
+              )
+
+              for solution in solutions:
+
+                  topics = solution["topics"]
+
+                  if not topics:
+                      topics = "-"
+
+                  lines.append(
+                      f"| {solution['number']} "
+                      f"| {solution['title']} "
+                      f"| {solution['icon']} {solution['difficulty']} "
+                      f"| {solution['language']} "
+                      f"| {topics} "
+                      f"| [View](./{solution['link']}) |"
+                  )
+
+          else:
+              lines.append(
+                  "No solutions have been synced yet."
+              )
+
+          lines.append("")
+          lines.append("---")
+          lines.append("")
+          lines.append(
+              "🤖 README automatically generated using GitHub Actions."
+          )
+          lines.append("")
 
           Path("README.md").write_text(
               "\n".join(lines),
               encoding="utf-8"
+          )
+
+          print(
+              f"README generated successfully: "
+              f"{total} solutions "
+              f"({easy} Easy, {medium} Medium, {hard} Hard)"
           )
           PY
 
@@ -78,8 +253,8 @@ jobs:
           git add README.md
 
           if git diff --cached --quiet; then
-            echo "No README changes."
+            echo "README is already up to date."
           else
-            git commit -m "Update LeetCode README"
+            git commit -m "docs: update LeetCode README"
             git push
           fi
