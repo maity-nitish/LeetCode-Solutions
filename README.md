@@ -6,15 +6,16 @@ My solutions to LeetCode problems, automatically synced from LeetCode.
 
 | Difficulty | Solved |
 |---|---:|
-| 🟢 Easy | 2 |
+| 🟢 Easy | 3 |
 | 🟡 Medium | 0 |
 | 🔴 Hard | 0 |
-| **Total** | **2** |
+| **Total** | **3** |
 
 ## 💻 Solutions
 
 | # | Problem | Difficulty | Language | Topics | Solution |
 |---:|---|---|---|---|---|
+| 88 | Merge Sorted Array | 🟢 Easy | Java | Array, Two Pointers, Sorting | [View](./java/merge_sorted_array.java) |
 | 169 | Majority Element | 🟢 Easy | Java | Array, Hash Table, Divide and Conquer, Sorting, Counting, Boyer–Moore Majority Vote Algorithm | [View](./java/majority_element.java) |
 | 2965 | Find Missing and Repeated Values | 🟢 Easy | Java | Array, Hash Table, Math, Matrix | [View](./java/find_missing_and_repeated_values.java) |
 
