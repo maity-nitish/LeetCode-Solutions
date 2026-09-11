@@ -1,0 +1,85 @@
+name: Update README
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update README
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          extensions = {
+              ".java": "Java",
+              ".py": "Python",
+              ".cpp": "C++",
+              ".c": "C",
+              ".js": "JavaScript",
+              ".ts": "TypeScript",
+              ".sql": "SQL",
+          }
+
+          files = []
+
+          for path in Path(".").rglob("*"):
+              if path.is_file() and path.suffix in extensions:
+                  if ".git" not in path.parts:
+                      files.append(path)
+
+          files.sort()
+
+          lines = [
+              "# LeetCode Solutions",
+              "",
+              "Automatically updated list of my solved LeetCode problems.",
+              "",
+              "| Problem | Language | Solution |",
+              "|---|---|---|"
+          ]
+
+          for path in files:
+              problem = path.stem.replace("_", " ").title()
+              language = extensions[path.suffix]
+              link = path.as_posix()
+
+              lines.append(
+                  f"| {problem} | {language} | [View Solution]({link}) |"
+              )
+
+          lines.extend([
+              "",
+              f"**Total Problems Solved: {len(files)}**",
+              ""
+          ])
+
+          Path("README.md").write_text(
+              "\n".join(lines),
+              encoding="utf-8"
+          )
+          PY
+
+      - name: Commit README changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+
+          if git diff --cached --quiet; then
+            echo "No README changes."
+          else
+            git commit -m "Update LeetCode README"
+            git push
+          fi
