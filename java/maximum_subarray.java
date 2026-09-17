@@ -3,12 +3,15 @@
 // Language: java
 // Link: https://leetcode.com/problems/maximum-subarray/
 // Synced by: LinkCode
-// Date: 9/17/2026, 7:36:05 PM
+// Date: 9/17/2026, 7:36:37 PM
 // ======================================
 
 
 class Solution {
     public int maxSubArray(int[] nums) {
+        if(nums.length==0){
+            return 0;
+        }
         int cs=nums[0];
         int ms=nums[0];
         for(int i=1;i<nums.length;i++){
