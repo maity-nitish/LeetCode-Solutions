@@ -7,15 +7,16 @@ My solutions to LeetCode problems, automatically synced from LeetCode.
 | Difficulty | Solved |
 |---|---:|
 | 🟢 Easy | 5 |
-| 🟡 Medium | 1 |
+| 🟡 Medium | 2 |
 | 🔴 Hard | 0 |
-| **Total** | **6** |
+| **Total** | **7** |
 
 ## 💻 Solutions
 
 | # | Problem | Difficulty | Language | Topics | Solution |
 |---:|---|---|---|---|---|
 | 50 | Pow(x, n) | 🟡 Medium | Java | Math, Recursion | [View](./java/powx_n.java) |
+| 53 | Maximum Subarray | 🟡 Medium | Java | Array, Divide and Conquer, Dynamic Programming | [View](./java/maximum_subarray.java) |
 | 88 | Merge Sorted Array | 🟢 Easy | Java | Array, Two Pointers, Sorting | [View](./java/merge_sorted_array.java) |
 | 121 | Best Time to Buy and Sell Stock | 🟢 Easy | Java | Array, Dynamic Programming | [View](./java/best_time_to_buy_and_sell_stock.java) |
 | 136 | Single Number | 🟢 Easy | Java | Array, Bit Manipulation | [View](./java/single_number.java) |
